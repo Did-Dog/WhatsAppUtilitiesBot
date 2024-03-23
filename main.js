@@ -54,7 +54,7 @@ client.on('qr', qr => {
 client.on("ready", async () => {
   console.log('Bot Client is ready!');
   console.log(
-    Client Started as ${client.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>,
+    "Client Started as ${client.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>",
   );
   await client.sendMessage(
     client.info.me._serialized,
