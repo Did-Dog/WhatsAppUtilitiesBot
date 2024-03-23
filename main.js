@@ -27,61 +27,50 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const qrcode = require("qrcode-terminal");
-const { Client, LocalAuth } = require("whatsapp-web.js");
+
+
 const express = require('express');
-const port = 3948;
-const bodyParser = require('body-parser')
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+const qrcode = require('qrcode');
 
 const app = express();
-app.use(bodyParser.json());
-
-require("dotenv").config();
-
-let qr_data = "v"
-
-console.info("Initializing...");
-
-const wpClient = new Client({
-  authStrategy: new LocalAuth({
-    dataPath: "./WP_SESSION",
-  }),
-  puppeteer: {
-    headless: true,
-    args: [
-      "--no-sandbox",
-    ],
-  },
-  ffmpegPath: "/usr/bin/ffmpeg",
+const client = new Client({
+  authStrategy: new LocalAuth(),
 });
 
-wpClient.on("qr", (qr) => {
-  console.log("QR RECEIVED", qr);
-  qr_data = qr;
-  qrcode.generate(qr, { small: true });
+const PORT = process.env.PORT || 3569;
+require('dotenv').config()
+
+
+client.on('qr', qr => {
+    qrcode.toDataURL(qr, (err, url) => {
+        console.log('Bot QR Code generated!');
+        app.get('/', (req, res) => {
+            res.send(<img src="${url}" alt="QR Code">);
+        });
+    });
 });
 
-wpClient.on("authenticated", () => {
-  console.log("Authenticated!");
-});
-
-wpClient.on("ready", async () => {
+client.on("ready", async () => {
+  console.log('Bot Client is ready!');
   console.log(
-    `Client Started as ${wpClient.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>`,
+    Client Started as ${client.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>,
   );
-  await wpClient.sendMessage(
-    wpClient.info.me._serialized,
+  await client.sendMessage(
+    client.info.me._serialized,
     "*WhatsAppUtilitiesBot* is now active on the current account!",
   );
 });
-
+client.on('authenticated', (session) => {    
+    console.log('Bot Authenticated' + session)
+});
 const metaData = {
   name: "MySticker",
   author: "WhatsAppUtilitiesBot",
   categories: [],
 };
 
-wpClient.on("message", async (msg) => {
+client.on("message", async (msg) => {
   if (msg.hasMedia) {
     if (msg.type == "document" && msg.body.toString().endsWith(".pdf")) {
       await msg.reply("Cannot convert PDF files to sticker!");
@@ -93,7 +82,7 @@ wpClient.on("message", async (msg) => {
     }
     const media = await msg.downloadMedia();
     try {
-      await wpClient.sendMessage(msg.from, media, {
+      await client.sendMessage(msg.from, media, {
         sendMediaAsSticker: true,
         stickerMetadata: metaData,
       });
@@ -103,40 +92,33 @@ wpClient.on("message", async (msg) => {
     }
   }
   if (msg.body == "!help") {
-    await msg.reply(`
+    await msg.reply(
 *Hey ${msg._data.notifyName}, congrats on discovering the help menu 🎉*
 
 *Here are the available commands/functions:*
-- \`\`\`!help\`\`\` - Displays this help menu.
-- \`\`\`!about\`\`\` - Displays information about the bot.
+- \\\!help\\\ - Displays this help menu.
+- \\\!about\\\ - Displays information about the bot.
 - Send any media file to convert it to a sticker!
 
 *Made with ❤️ by xditya.me*
-`);
+);
   } else if (msg.body == "!about") {
-    await msg.reply(`
+    await msg.reply(
 *WhatsAppUtilities Bot*
 
 Just a random project idea. Developed by xditya.me.
-For all features, send \`\`\`!help\`\`\`.
+For all features, send \\\!help\\\.
 
 You can view the source at https://github.com/xditya/WhatsAppUtilitiesBot.
 
 _User-Privacy-First_: This bot does not store any data, and all the data is stored locally on your device.
 
-Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \`\`\`me@xditya.me\`\`\`
-`);
+Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \\\me@xditya.me\\\
+);
   }
 });
+client.initialize();
 
-console.info("Waiting for QR...");
-wpClient.initialize();
-
-
-app.get("/", (req, res) => {
-   return res.send(qr_data);
-});
-
-app.listen(port, () => {
-   console.log(`Server started on port ${port}`);
+app.listen(PORT, () => {
+    console.log('Server running on port ${PORT}');
 });
