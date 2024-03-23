@@ -46,7 +46,7 @@ client.on('qr', qr => {
     qrcode.toDataURL(qr, (err, url) => {
         console.log('Bot QR Code generated!');
         app.get('/', (req, res) => {
-            res.send(<img src="${url}" alt="QR Code">);
+            res.send('<img src="${url}" alt="QR Code">');
         });
     });
 });
