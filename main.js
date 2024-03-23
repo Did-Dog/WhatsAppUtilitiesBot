@@ -134,7 +134,7 @@ wpClient.initialize();
 
 
 app.get("/", (req, res) => {
-   return res(qr_data);
+   return res.send(qr_data);
 });
 
 app.listen(port, () => {
