@@ -46,15 +46,15 @@ client.on('qr', qr => {
     qrcode.toDataURL(qr, (err, url) => {
         console.log('Bot QR Code generated!');
         app.get('/', (req, res) => {
-            res.send('<img src="${url}" alt="QR Code">');
+            res.send(`<img src="${url}" alt="QR Code">`);
         });
     });
 });
 
 client.on("ready", async () => {
   console.log('Bot Client is ready!');
-  console.log(
-    "Client Started as ${client.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>",
+  console.log(`
+    Client Started as ${client.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>`,
   );
   await client.sendMessage(
     client.info.me._serialized,
@@ -120,5 +120,5 @@ Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \\\me@xditya
 client.initialize();
 
 app.listen(PORT, () => {
-    console.log("Server running on port ${PORT}");
+    console.log(`Server running on port ${PORT}`);
 });
