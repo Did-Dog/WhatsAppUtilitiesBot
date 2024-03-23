@@ -120,5 +120,5 @@ Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \\\me@xditya
 client.initialize();
 
 app.listen(PORT, () => {
-    console.log('Server running on port ${PORT}');
+    console.log("Server running on port ${PORT}");
 });
