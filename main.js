@@ -35,7 +35,7 @@ const qrcode = require('qrcode');
 
 const app = express();
 const client = new Client({
-  authStrategy: new LocalAuth(),
+    authStrategy: new LocalAuth(),
 });
 
 const PORT = process.env.PORT || 3569;
@@ -52,47 +52,44 @@ client.on('qr', qr => {
 });
 
 client.on("ready", async () => {
-  console.log('Bot Client is ready!');
-  console.log(`
-    Client Started as ${client.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>`,
-  );
-  await client.sendMessage(
-    client.info.me._serialized,
-    "*WhatsAppUtilitiesBot* is now active on the current account!",
-  );
+    console.log('Bot Client is ready!');
+    console.log(`
+    Client Started as ${client.info.pushname}\nWhatsAppUtilitiesBot has started!\n(c) @xditya <https://xditya.me>`, );
+    await client.sendMessage(
+        client.info.me._serialized, "*WhatsAppUtilitiesBot* is now active on the current account!", );
 });
-client.on('authenticated', (session) => {    
+client.on('authenticated', (session) => {
     console.log('Bot Authenticated' + session)
 });
 const metaData = {
-  name: "MySticker",
-  author: "WhatsAppUtilitiesBot",
-  categories: [],
+    name: "MySticker",
+    author: "WhatsAppUtilitiesBot",
+    categories: [],
 };
 
 client.on("message", async (msg) => {
-  if (msg.hasMedia) {
-    if (msg.type == "document" && msg.body.toString().endsWith(".pdf")) {
-      await msg.reply("Cannot convert PDF files to sticker!");
-      return;
+    if (msg.hasMedia) {
+        if (msg.type == "document" && msg.body.toString().endsWith(".pdf")) {
+            await msg.reply("Cannot convert PDF files to sticker!");
+            return;
+        }
+        if (msg.type == "audio" || msg.type == "ptt") {
+            await msg.reply("Cannot convert audio files to sticker!");
+            return;
+        }
+        const media = await msg.downloadMedia();
+        try {
+            await client.sendMessage(msg.from, media, {
+                sendMediaAsSticker: true,
+                stickerMetadata: metaData,
+            });
+        } catch (err) {
+            console.error(err);
+            await msg.reply("Error while sending sticker");
+        }
     }
-    if (msg.type == "audio" || msg.type == "ptt") {
-      await msg.reply("Cannot convert audio files to sticker!");
-      return;
-    }
-    const media = await msg.downloadMedia();
-    try {
-      await client.sendMessage(msg.from, media, {
-        sendMediaAsSticker: true,
-        stickerMetadata: metaData,
-      });
-    } catch (err) {
-      console.error(err);
-      await msg.reply("Error while sending sticker");
-    }
-  }
-  if (msg.body == "!help") {
-    await msg.reply(`
+    if (msg.body == "!help") {
+        await msg.reply(`
 *Hey ${msg._data.notifyName}, congrats on discovering the help menu 🎉*
 
 *Here are the available commands/functions:*
@@ -102,8 +99,8 @@ client.on("message", async (msg) => {
 
 *Made with ❤️ by xditya.me*
 `);
-  } else if (msg.body == "!about") {
-    await msg.reply(`
+    } else if (msg.body == "!about") {
+        await msg.reply(`
 *WhatsAppUtilities Bot*
 
 Just a random project idea. Developed by xditya.me.
@@ -115,7 +112,7 @@ _User-Privacy-First_: This bot does not store any data, and all the data is stor
 
 Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \\\me@xditya.me\\\
 `);
-  }
+    }
 });
 client.initialize();
 
