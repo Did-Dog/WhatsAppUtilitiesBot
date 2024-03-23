@@ -29,6 +29,16 @@ limitations under the License.
 
 const qrcode = require("qrcode-terminal");
 const { Client, LocalAuth } = require("whatsapp-web.js");
+const express = require('express');
+const port = 3948;
+const bodyParser = require('body-parser')
+
+const app = express();
+app.use(bodyParser.json());
+
+require("dotenv").config();
+
+let qr_data = "v"
 
 console.info("Initializing...");
 
@@ -47,6 +57,7 @@ const wpClient = new Client({
 
 wpClient.on("qr", (qr) => {
   console.log("QR RECEIVED", qr);
+  qr_data = qr;
   qrcode.generate(qr, { small: true });
 });
 
@@ -120,3 +131,12 @@ Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \`\`\`me@xdi
 
 console.info("Waiting for QR...");
 wpClient.initialize();
+
+
+app.get("/", (req, res) => {
+   return res(qr_data);
+});
+
+app.listen(port, () => {
+   console.log(`Server started on port ${port}`);
+});
