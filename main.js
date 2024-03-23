@@ -92,7 +92,7 @@ client.on("message", async (msg) => {
     }
   }
   if (msg.body == "!help") {
-    await msg.reply(
+    await msg.reply(`
 *Hey ${msg._data.notifyName}, congrats on discovering the help menu 🎉*
 
 *Here are the available commands/functions:*
@@ -101,9 +101,9 @@ client.on("message", async (msg) => {
 - Send any media file to convert it to a sticker!
 
 *Made with ❤️ by xditya.me*
-);
+`);
   } else if (msg.body == "!about") {
-    await msg.reply(
+    await msg.reply(`
 *WhatsAppUtilities Bot*
 
 Just a random project idea. Developed by xditya.me.
@@ -114,7 +114,7 @@ You can view the source at https://github.com/xditya/WhatsAppUtilitiesBot.
 _User-Privacy-First_: This bot does not store any data, and all the data is stored locally on your device.
 
 Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \\\me@xditya.me\\\
-);
+`);
   }
 });
 client.initialize();
