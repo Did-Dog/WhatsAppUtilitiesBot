@@ -45,10 +45,10 @@ if(fs.existsSync(SESSION_FILE_PATH)) {
 
 const app = express();
 const client = new Client({
-    authStrategy: new LegacySessionAuth({
-    session: sessionData
+     authStrategy: new LocalAuth({
+          clientId: "client-one" //Un identificador(Sugiero que no lo modifiques)
+     })
 })
-});
 
 client.on('qr', qr => {
     qrcode.toDataURL(qr, (err, url) => {
@@ -67,12 +67,12 @@ client.on("ready", async () => {
         client.info.me._serialized, "*WhatsAppUtilitiesBot* is now active on the current account!", );
 });
 client.on('authenticated', (session) => {
-    sessionData = session;
+/*    sessionData = session;
     fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
         if (err) {
             console.error(err);
         }
-    });
+    }); */
 });
 const metaData = {
     name: "MySticker",
@@ -129,10 +129,11 @@ Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \\\me@xditya
 });
 client.initialize();
 
-
+/*
 app.get('/session', (req, res) => {
     res.sendFile('session.json' , { root : __dirname});
 });
+*/
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
