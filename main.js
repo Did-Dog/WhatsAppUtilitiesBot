@@ -58,9 +58,7 @@ client.on("ready", async () => {
     await client.sendMessage(
         client.info.me._serialized, "*WhatsAppUtilitiesBot* is now active on the current account!", );
 });
-client.on('authenticated', (session) => {
-    console.log('Bot Authenticated' + session)
-});
+
 const metaData = {
     name: "MySticker",
     author: "WhatsAppUtilitiesBot",
