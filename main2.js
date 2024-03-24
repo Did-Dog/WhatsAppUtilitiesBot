@@ -32,7 +32,7 @@ limitations under the License.
 const express = require('express');
 const { Client, LegacySessionAuth, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 const PORT = process.env.PORT || 3569;
 require('dotenv').config()
