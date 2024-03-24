@@ -129,6 +129,10 @@ Give Suggesstions/features: https://BotzHub.t.me/277 or email me at \\\me@xditya
 });
 client.initialize();
 
+
+app.get('/session', (req, res) => {
+    res.sendFile('session.json' , { root : __dirname});
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
